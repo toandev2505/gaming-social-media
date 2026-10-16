@@ -1,4 +1,4 @@
-![IMG_256]()
+![IMG_256](https://github.com/user-attachments/assets/c5b0ff54-b6d7-432d-a006-1366bd676936)
 
 **NGUỒN: [SƠ ĐỒ FHD](https://shorturl.at/agFD3)**
 
