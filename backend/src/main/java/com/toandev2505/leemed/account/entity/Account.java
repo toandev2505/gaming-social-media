@@ -5,13 +5,13 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+@Builder
 @Entity
 @Table(name = "accounts")
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Account extends BaseEntity {
 
@@ -24,7 +24,7 @@ public class Account extends BaseEntity {
     @Column(name = "phone", unique = true, length = 10)
     String phone;
 
-    @Column(name = "password_hash", nullable = false)
+    @Column(name = "password_hash")
     String passwordHash;
 
     @Enumerated(EnumType.STRING)
