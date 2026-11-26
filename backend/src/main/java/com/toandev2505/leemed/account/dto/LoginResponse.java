@@ -16,12 +16,12 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class LoginResponse extends BaseDTO {
 
-    private String username;
-    private String email;
-    private String phone;
-    private AccountRole role;
-    private AccountStatus status;
-    private String loginMethod; // USERNAME, PHONE, EMAIL, GOOGLE
-    private String accessToken;
-    private LocalDateTime expiresAt;
+    String username;
+    String email;
+    String phone;
+    AccountRole role;
+    AccountStatus status;
+    String loginMethod; // USERNAME, PHONE, EMAIL, GOOGLE
+    String accessToken;
+    LocalDateTime expiresAt;
 }
