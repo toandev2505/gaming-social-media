@@ -8,6 +8,7 @@ import com.toandev2505.leemed.account.entity.AccountStatus;
 import com.toandev2505.leemed.account.internal.service.AccountService;
 import com.toandev2505.leemed.account.internal.service.AuthService;
 import com.toandev2505.leemed.account.mapper.AuthMapper;
+import com.toandev2505.leemed.core.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +24,7 @@ public class AuthServiceImpl implements AuthService {
 
     private final AccountService accountService;
     private final AuthMapper authMapper;
+    private final JwtService jwtService;
 
     @Override
     @Transactional(readOnly = true)
@@ -75,9 +77,20 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private LoginResponse issueLoginResponse(Account account, String loginMethod) {
-        LocalDateTime expiresAt = LocalDateTime.now().plusHours(24);
-        String token = UUID.randomUUID().toString();
-        return authMapper.toLoginResponse(account, loginMethod, token, expiresAt);
+        String roleName = String.valueOf(account.getRole());
+        String accessToken = jwtService.generateToken(
+                account.getId(),
+                account.getUsername(),
+                roleName
+        );
+        LocalDateTime expiresAt = jwtService.getExpirationDateTime();
+
+        return authMapper.toLoginResponse(
+                account,
+                loginMethod,
+                accessToken,
+                expiresAt
+        );
     }
 
     private boolean verifyPassword(String rawPassword, String passwordHash) {
