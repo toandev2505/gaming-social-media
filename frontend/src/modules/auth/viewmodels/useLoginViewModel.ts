@@ -4,6 +4,7 @@ import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { authService } from "../models/auth.service";
 import { AuthSessionUser } from "../models/auth.types";
+import { normalizeRole } from "../models/auth.session";
 import { ApiError } from "@/core/api/http-client";
 
 export const AUTH_TOKEN_KEY = "leemed_access_token";
@@ -68,19 +69,14 @@ export function useLoginViewModel() {
         expiresAt: payload.expiresAt,
       };
 
-      const storage = rememberMe ? localStorage : sessionStorage;
-      const otherStorage = rememberMe ? sessionStorage : localStorage;
-
-      otherStorage.removeItem(AUTH_TOKEN_KEY);
-      otherStorage.removeItem(AUTH_USER_KEY);
-
-      if (token) {
-        storage.setItem(AUTH_TOKEN_KEY, token);
-      }
-      storage.setItem(AUTH_USER_KEY, JSON.stringify(userInfo));
-
+      const role = normalizeRole(userInfo.role);
       setSuccessMessage("Đăng nhập thành công! Đang chuyển hướng...");
-      router.push("/");
+
+      if (role === "ADMIN") {
+        router.push("/admin");
+      } else {
+        router.push("/videos");
+      }
       router.refresh();
     } catch (err) {
       if (err instanceof ApiError) {

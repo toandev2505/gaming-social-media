@@ -8,6 +8,36 @@ export class ApiError extends Error {
   }
 }
 
+function getAuthHeaders(): Record<string, string> {
+  if (typeof window === "undefined") return {};
+  const token =
+    localStorage.getItem("leemed_access_token") ||
+    sessionStorage.getItem("leemed_access_token");
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
+export async function getJson<TResponse>(path: string): Promise<TResponse> {
+  const res = await fetch(`${API_BASE_URL}${path}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      ...getAuthHeaders(),
+    },
+    credentials: "include",
+    cache: "no-store",
+  });
+
+  const data = await res.json().catch(() => null);
+
+  if (!res.ok) {
+    const message =
+      data?.message || data?.detail || "Không thể tải dữ liệu từ máy chủ.";
+    throw new ApiError(message, res.status);
+  }
+
+  return data as TResponse;
+}
+
 export async function postJson<TResponse, TBody>(
   path: string,
   body: TBody
