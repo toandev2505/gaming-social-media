@@ -42,23 +42,23 @@ export function useLoginViewModel() {
     e.preventDefault();
     setErrorMessage(null);
     setSuccessMessage(null);
-
+  
     const validationError = validate();
     if (validationError) {
       setErrorMessage(validationError);
       return;
     }
-
+  
     try {
       setLoading(true);
       const res = await authService.login({
         identifier: identifier.trim(),
         password,
       });
-
+  
       const payload = res.data ?? res;
       const token = payload.accessToken;
-
+  
       const userInfo: AuthSessionUser = {
         username: payload.username,
         email: payload.email,
@@ -68,10 +68,21 @@ export function useLoginViewModel() {
         loginMethod: payload.loginMethod,
         expiresAt: payload.expiresAt,
       };
-
+  
+      const storage = rememberMe ? window.localStorage : window.sessionStorage;
+      const otherStorage = rememberMe ? window.sessionStorage : window.localStorage;
+  
+      otherStorage.removeItem(AUTH_TOKEN_KEY);
+      otherStorage.removeItem(AUTH_USER_KEY);
+  
+      if (token) {
+        storage.setItem(AUTH_TOKEN_KEY, token);
+      }
+      storage.setItem(AUTH_USER_KEY, JSON.stringify(userInfo));
+  
       const role = normalizeRole(userInfo.role);
       setSuccessMessage("Đăng nhập thành công! Đang chuyển hướng...");
-
+  
       if (role === "ADMIN") {
         router.push("/admin");
       } else {
