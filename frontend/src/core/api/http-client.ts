@@ -46,6 +46,7 @@ export async function postJson<TResponse, TBody>(
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      ...getAuthHeaders(),
     },
     credentials: "include",
     body: JSON.stringify(body),
@@ -55,7 +56,36 @@ export async function postJson<TResponse, TBody>(
 
   if (!res.ok) {
     const message =
-      data?.message || data?.detail || "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.";
+      data?.message ||
+      data?.detail ||
+      `Yêu cầu thất bại (mã ${res.status}). Vui lòng thử lại.`;
+    throw new ApiError(message, res.status);
+  }
+
+  return data as TResponse;
+}
+
+export async function putJson<TResponse, TBody>(
+  path: string,
+  body: TBody
+): Promise<TResponse> {
+  const res = await fetch(`${API_BASE_URL}${path}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      ...getAuthHeaders(),
+    },
+    credentials: "include",
+    body: JSON.stringify(body),
+  });
+
+  const data = await res.json().catch(() => null);
+
+  if (!res.ok) {
+    const message =
+      data?.message ||
+      data?.detail ||
+      `Cập nhật thất bại (mã ${res.status}). Vui lòng thử lại.`;
     throw new ApiError(message, res.status);
   }
 
