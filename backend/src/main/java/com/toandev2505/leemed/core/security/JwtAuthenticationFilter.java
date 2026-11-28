@@ -62,7 +62,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
         } catch (Exception ex) {
-            // Token hết hạn hoặc sai chữ ký -> xóa context để entryPoint xử lý trả về lỗi chuẩn
+            System.err.println("JWT filter error: " + ex.getClass().getName() + " - " + ex.getMessage());
             SecurityContextHolder.clearContext();
         }
 
