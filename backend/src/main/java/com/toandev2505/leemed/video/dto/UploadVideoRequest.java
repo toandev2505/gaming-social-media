@@ -2,6 +2,7 @@ package com.toandev2505.leemed.video.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -13,7 +14,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UploadVideoRequest {
 
-    @NotNull(message = "creatorId không được để trống")
+    @Positive(message = "creatorId phải lớn hơn 0")
     Long creatorId;
 
     @NotBlank(message = "Tiêu đề không được để trống")
